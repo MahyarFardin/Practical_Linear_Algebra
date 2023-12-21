@@ -2,19 +2,33 @@
  "cells": [
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "b4d93cb5-9528-45cb-a6a0-6672368f8007",
    "metadata": {},
    "source": [
     "$$\n",
     "{\\huge Chapter8} \\\\\n",
     " Matrix inverse\n",
+=======
+   "id": "1b1b3577",
+   "metadata": {},
+   "source": [
+    "$$\n",
+    "{\\huge Chapter \\ 8} \\\\\n",
+    "Matrix \\ Inverse\n",
+>>>>>>> refs/remotes/origin/main
     "$$"
    ]
   },
   {
    "cell_type": "code",
+<<<<<<< HEAD
    "execution_count": 5,
    "id": "6dcd761f-b85f-4998-a8a9-83f54b4531bc",
+=======
+   "execution_count": 42,
+   "id": "ea541638",
+>>>>>>> refs/remotes/origin/main
    "metadata": {},
    "outputs": [],
    "source": [
@@ -23,14 +37,22 @@
   },
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "2bea4228-b047-428a-b6cd-cc48f6c5bb45",
    "metadata": {},
    "source": [
     "# Exercise 8-1"
+=======
+   "id": "36e76e3e",
+   "metadata": {},
+   "source": [
+    "**Exercise 1**"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "code",
+<<<<<<< HEAD
    "execution_count": null,
    "id": "c8c8c77c-fae1-4687-86aa-a501d79c0034",
    "metadata": {},
@@ -230,18 +252,51 @@
     "\n",
     "pesudo_inverse_wide = pinv(wide)\n",
     "display(pesudo_inverse_wide)"
+=======
+   "execution_count": 16,
+   "id": "59b6842a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "A_inv_inv = [3 1 6; 1 6 5; 8 4 8]\n",
+      "A = [3 1 6; 1 6 5; 8 4 8]\n",
+      "A == A_inv_inv : true"
+     ]
+    }
+   ],
+   "source": [
+    "A = rand(1:10, 3, 3)\n",
+    "A_inv = inv(A)\n",
+    "A_inv_inv = inv(A_inv)\n",
+    "A = round.(Int, A)\n",
+    "A_inv_inv = round.(Int, A_inv_inv)\n",
+    "println(\"A_inv_inv = \", A_inv_inv)\n",
+    "println(\"A = \", A)\n",
+    "print(\"A == A_inv_inv : \", isequal(A, A_inv_inv))"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "ac0ef580-0992-4dd3-a68e-9749c45d570d",
    "metadata": {},
    "source": [
     "# Exercise 8-6"
+=======
+   "id": "8303b584",
+   "metadata": {},
+   "source": [
+    "**Exercise 2**"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "code",
+<<<<<<< HEAD
    "execution_count": 73,
    "id": "267cbd6e-098e-4bd7-80b0-82f34dd89d88",
    "metadata": {},
@@ -352,52 +407,319 @@
     "b = transpose(a)\n",
     "\n",
     "display(inv(a * b))"
+=======
+   "execution_count": 33,
+   "id": "9750b2d7",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[-0.0 0.2 -0.2; 0.25 0.05 -0.3; -0.38 -0.48 1.35]\n",
+      "[-0.0 0.25 -0.37; 0.2 0.05 -0.47; -0.2 -0.3 1.35]\n"
+     ]
+    }
+   ],
+   "source": [
+    "function minor(matrix, row, col)\n",
+    "    sub_matrix = matrix[setdiff(1:end, row), setdiff(1:end, col)]\n",
+    "    return sub_matrix\n",
+    "end\n",
+    "\n",
+    "function determinant(matrix)\n",
+    "    n = size(matrix, 1)\n",
+    "    if n == 1\n",
+    "        return matrix[1, 1]\n",
+    "    elseif n == 2\n",
+    "        return matrix[1, 1] * matrix[2, 2] - matrix[1, 2] * matrix[2, 1]\n",
+    "    else\n",
+    "        det = 0\n",
+    "        for i in 1:n\n",
+    "            sign = (-1)^(i + 1)\n",
+    "            minor_matrix = minor(matrix, [1], [i])\n",
+    "            det += sign * matrix[1, i] * determinant(minor_matrix)\n",
+    "        end\n",
+    "        return det\n",
+    "    end\n",
+    "end\n",
+    "\n",
+    "function cofactor_matrix(matrix)\n",
+    "    n = size(matrix, 1)\n",
+    "    cofactor_mat = similar(matrix)\n",
+    "    for i in 1:n\n",
+    "        for j in 1:n\n",
+    "            minor_mat = minor(matrix, [i], [j])\n",
+    "            sign = (-1)^((i + j) % 2)\n",
+    "            cofactor_mat[j, i] = sign * determinant(minor_mat)\n",
+    "        end\n",
+    "    end\n",
+    "    return cofactor_mat\n",
+    "end\n",
+    "\n",
+    "function adjugate(matrix)\n",
+    "    return transpose(cofactor_matrix(matrix))\n",
+    "end\n",
+    "\n",
+    "function inverse(matrix)\n",
+    "    det = determinant(matrix)\n",
+    "    if det == 0\n",
+    "        error(\"The matrix is singular and it's not invertible.\")\n",
+    "    else\n",
+    "        return adjugate(matrix) / det\n",
+    "    end\n",
+    "end\n",
+    "\n",
+    "A = rand(1:10, 3, 3)\n",
+    "\n",
+    "A_inv = inverse(A)\n",
+    "A_inv_builtin = inv(A)\n",
+    "\n",
+    "A_inv = round.(A_inv, digits=2)\n",
+    "A_inv_builtin = round.(A_inv_builtin, digits=2)\n",
+    "\n",
+    "println(A_inv)\n",
+    "println(A_inv_builtin)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "id": "c31f5d3a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "A = [2.0 1.0 3.0; -1.0 1.0 -2.0; 1.0 -1.0 3.0]\n",
+      "det(A) = 3.0\n",
+      "A_inverse = [0.33333333333333337 -2.0 -1.6666666666666667; 0.3333333333333333 1.0 0.3333333333333333; 0.0 1.0 1.0]\n",
+      "Built-in inverse method : [0.33333333333333337 -2.0 -1.6666666666666667; 0.33333333333333337 1.0 0.3333333333333333; 0.0 1.0 1.0]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Gaussian elimination for matrix inversion\n",
+    "function determinant(matrix)\n",
+    "    if size(matrix, 1) != size(matrix, 2)\n",
+    "        throw(ArgumentError(\"The matrix is not square\"))\n",
+    "    end\n",
+    "    \n",
+    "    n = size(matrix, 1)\n",
+    "    if n == 1\n",
+    "        return matrix[1, 1]\n",
+    "    else\n",
+    "        det = 0\n",
+    "        for j in 1:n\n",
+    "            sign = (-1) ^ (j-1)\n",
+    "            sub_matrix = matrix[2:end, filter(i -> i != j, 1:n)]\n",
+    "            det += sign * matrix[1, j] * determinant(sub_matrix)\n",
+    "        end\n",
+    "        return det\n",
+    "    end\n",
+    "end\n",
+    "\n",
+    "function inverse_matrix(matrix)\n",
+    "    n = size(matrix, 1)\n",
+    "    identity = Matrix(I, n, n)\n",
+    "    augmented_matrix = hcat(matrix, identity)\n",
+    "\n",
+    "    for i in 1:n\n",
+    "        pivot = augmented_matrix[i, i]\n",
+    "        if pivot == 0\n",
+    "            for j in i+1:n\n",
+    "                if augmented_matrix[j, i] != 0\n",
+    "                    augmented_matrix[i, :] .= augmented_matrix[j, :]\n",
+    "                    pivot = augmented_matrix[i, i]\n",
+    "                    break\n",
+    "                end\n",
+    "            end\n",
+    "            if pivot == 0\n",
+    "                throw(ArgumentError(\"Matrix is singular and not invertible\"))\n",
+    "            end\n",
+    "        end\n",
+    "\n",
+    "        augmented_matrix[i, :] ./= pivot\n",
+    "        for k in 1:n\n",
+    "            if k != i\n",
+    "                factor = augmented_matrix[k, i]\n",
+    "                augmented_matrix[k, :] .-= factor * augmented_matrix[i, :]\n",
+    "            end\n",
+    "        end\n",
+    "    end\n",
+    "\n",
+    "    inv = augmented_matrix[:, n+1:end]\n",
+    "    return inv\n",
+    "end\n",
+    "\n",
+    "A = [2.0 1.0 3.0; -1.0 1.0 -2.0; 1.0 -1.0 3.0]\n",
+    "A_inverse = inverse_matrix(A)\n",
+    "\n",
+    "println(\"A = \", A)\n",
+    "println(\"det(A) = \", determinant(A))\n",
+    "println(\"A_inverse = \", A_inverse)\n",
+    "println(\"Built-in inverse method : \", inv(A))"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "7103591d-bf58-47d1-86a4-1f994941750c",
    "metadata": {},
    "source": [
     "# Exercise 8-8"
+=======
+   "id": "8096a00c",
+   "metadata": {},
+   "source": [
+    "**Exercise 3**"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
+<<<<<<< HEAD
    "id": "65cca1e3-7a59-4b1e-98b1-84776ab6d5fa",
+=======
+   "id": "f6919e86",
+>>>>>>> refs/remotes/origin/main
    "metadata": {},
    "outputs": [],
    "source": []
   },
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "598101fc-edfa-4ab2-b6f4-1aab71b3825f",
    "metadata": {},
    "source": [
     "# Exercise 8-9"
+=======
+   "id": "66041487",
+   "metadata": {},
+   "source": [
+    "**Exercise 4**"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
+<<<<<<< HEAD
    "id": "23d3f35c-4d1a-4a83-843f-52744f564e7e",
+=======
+   "id": "bebf1e83",
+>>>>>>> refs/remotes/origin/main
    "metadata": {},
    "outputs": [],
    "source": []
   },
   {
    "cell_type": "markdown",
+<<<<<<< HEAD
    "id": "9351a41a-c86f-462b-a0b7-b47a96b88047",
    "metadata": {},
    "source": [
     "# Exercise 8-10"
+=======
+   "id": "f46e9fa6",
+   "metadata": {},
+   "source": [
+    "**Exercise 5**"
+>>>>>>> refs/remotes/origin/main
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
+<<<<<<< HEAD
    "id": "1c214bc7-c262-4abf-8b2a-8f4963b1f007",
+=======
+   "id": "3fe77801",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "95709683",
+   "metadata": {},
+   "source": [
+    "**Exercise 6**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "daa68e10",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "168900e6",
+   "metadata": {},
+   "source": [
+    "**Exercise 7**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c814c96f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e344bcd0",
+   "metadata": {},
+   "source": [
+    "**Exercise 8**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "180be0b0",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4a8556ee",
+   "metadata": {},
+   "source": [
+    "**Exercise 9**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "455ec0d4",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "679fe6a9",
+   "metadata": {},
+   "source": [
+    "**Exercise 10**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b68f3c47",
+>>>>>>> refs/remotes/origin/main
    "metadata": {},
    "outputs": [],
    "source": []
@@ -405,7 +727,11 @@
  ],
  "metadata": {
   "kernelspec": {
+<<<<<<< HEAD
    "display_name": "Julia 1.9.4",
+=======
+   "display_name": "Julia 1.9.2",
+>>>>>>> refs/remotes/origin/main
    "language": "julia",
    "name": "julia-1.9"
   },
@@ -413,7 +739,11 @@
    "file_extension": ".jl",
    "mimetype": "application/julia",
    "name": "julia",
+<<<<<<< HEAD
    "version": "1.9.4"
+=======
+   "version": "1.9.2"
+>>>>>>> refs/remotes/origin/main
   }
  },
  "nbformat": 4,
